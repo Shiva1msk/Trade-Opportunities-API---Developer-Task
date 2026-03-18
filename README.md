@@ -1,37 +1,65 @@
-# Trade Opportunities API
+# 🚀 Trade Opportunities API
 
-A FastAPI service that analyzes market data and provides trade opportunity
-insights for specific sectors in India, powered by Google Gemini.
+A **production-ready FastAPI service** that analyzes market data and generates **AI-powered trade opportunity insights** for various sectors in India using Google Gemini.
 
 ---
 
-## Setup
+## ✨ Features
 
-### 1. Clone & install dependencies
+* 🔐 JWT-based authentication (HS256)
+* 🤖 AI-powered analysis using Google Gemini
+* 🌐 Real-time market data collection (DuckDuckGo)
+* 🚦 Sliding-window rate limiting
+* ✅ Input validation with Pydantic
+* 🔄 CORS middleware support
+* 📄 Structured Markdown reports
+* ⚡ High-performance FastAPI backend
+* ☁️ Deployed on Render
+
+---
+
+## 🧠 How It Works
+
+1. User authenticates and receives a JWT token
+2. User sends a sector name (e.g., `technology`)
+3. System collects relevant market data
+4. Gemini AI analyzes the data
+5. API returns a structured trade opportunity report
+
+---
+
+## ⚙️ Setup
+
+### 1. Clone & Install Dependencies
 
 ```bash
+git clone https://github.com/Shiva1msk/Trade-Opportunities-API---Developer-Task.git
 cd trade-opportunities-api
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. Configure environment
+---
+
+### 2. Configure Environment
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` and set:
+Edit `.env`:
 
-| Variable | Description |
-|---|---|
-| `GEMINI_API_KEY` | Your Google Gemini API key ([get one free](https://aistudio.google.com/app/apikey)) |
-| `SECRET_KEY` | Random string for JWT signing |
-| `RATE_LIMIT_REQUESTS` | Max requests per window (default: 10) |
-| `RATE_LIMIT_WINDOW_SECONDS` | Window size in seconds (default: 60) |
+| Variable                    | Description                           |
+| --------------------------- | ------------------------------------- |
+| `GEMINI_API_KEY`            | Your Google Gemini API key            |
+| `SECRET_KEY`                | Secret key for JWT signing            |
+| `RATE_LIMIT_REQUESTS`       | Max requests per window (default: 10) |
+| `RATE_LIMIT_WINDOW_SECONDS` | Window size in seconds (default: 60)  |
 
-### 3. Run the server
+---
+
+### 3. Run the Server
 
 ```bash
 uvicorn main:app --reload --port 8000
@@ -39,9 +67,9 @@ uvicorn main:app --reload --port 8000
 
 ---
 
-## API Usage
+## 🔑 API Usage
 
-### Authenticate
+### 🔐 Authenticate
 
 ```bash
 curl -X POST http://localhost:8000/token \
@@ -49,21 +77,29 @@ curl -X POST http://localhost:8000/token \
   -d '{"username": "demo", "password": "demo123"}'
 ```
 
-Response:
+**Response:**
+
 ```json
-{"access_token": "<jwt>", "token_type": "bearer"}
+{
+  "access_token": "<jwt>",
+  "token_type": "bearer"
+}
 ```
 
-### Analyze a sector
+---
+
+### 📊 Analyze a Sector
 
 ```bash
 curl http://localhost:8000/analyze/pharmaceuticals \
   -H "Authorization: Bearer <jwt>"
 ```
 
-The `report` field in the response contains a full Markdown document.
+👉 The response contains a `report` field with a full Markdown analysis.
 
-#### Save report to file
+---
+
+### 💾 Save Report to File
 
 ```bash
 curl -s http://localhost:8000/analyze/pharmaceuticals \
@@ -74,55 +110,89 @@ curl -s http://localhost:8000/analyze/pharmaceuticals \
 
 ---
 
-## Endpoints
+## 📡 API Endpoints
 
-| Method | Path | Auth | Description |
-|---|---|---|---|
-| `POST` | `/token` | No | Get JWT token |
-| `GET` | `/analyze/{sector}` | Bearer JWT | Generate sector report |
-| `GET` | `/health` | No | Health check |
-| `GET` | `/docs` | No | Swagger UI |
-| `GET` | `/redoc` | No | ReDoc UI |
+| Method | Path                | Auth  | Description            |
+| ------ | ------------------- | ----- | ---------------------- |
+| `POST` | `/token`            | ❌ No  | Generate JWT token     |
+| `GET`  | `/analyze/{sector}` | ✅ Yes | Generate sector report |
+| `GET`  | `/health`           | ❌ No  | Health check           |
+| `GET`  | `/docs`             | ❌ No  | Swagger UI             |
+| `GET`  | `/redoc`            | ❌ No  | ReDoc UI               |
 
 ---
 
-## Demo Credentials
+## 👤 Demo Credentials
 
-| Username | Password |
-|---|---|
-| `demo` | `demo123` |
+| Username  | Password     |
+| --------- | ------------ |
+| `demo`    | `demo123`    |
 | `analyst` | `analyst456` |
 
 ---
 
-## Security Features
+## 🔐 Security Features
 
-- JWT Bearer authentication (HS256)
-- Per-session sliding-window rate limiting
-- Input validation (regex + length check on sector name)
-- CORS middleware
-- Structured error responses
+* JWT Bearer authentication (HS256)
+* Sliding-window rate limiting
+* Input validation (regex + length checks)
+* CORS middleware
+* Structured error handling
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
 ```
 main.py           — FastAPI app, routes, middleware
-auth.py           — JWT creation, session management
-rate_limiter.py   — Sliding-window rate limiter (in-memory)
-data_collector.py — DuckDuckGo search for market data
+auth.py           — JWT authentication & session management
+rate_limiter.py   — Sliding-window rate limiter
+data_collector.py — Market data collection (DuckDuckGo)
 analyzer.py       — Google Gemini integration
-models.py         — Pydantic request/response models
-config.py         — Environment-based configuration
+models.py         — Pydantic schemas
+config.py         — Environment configuration
 ```
 
 ---
 
-## Supported Sectors (examples)
+## 🌍 Supported Sectors
 
-pharmaceuticals, technology, agriculture, automotive, textiles, chemicals,
-electronics, steel, gems, jewelry, energy, infrastructure, finance,
-healthcare, education, retail, logistics, manufacturing, defence, telecom
+Examples:
 
-Any other sector name is also accepted — Gemini will analyze it.
+```
+pharmaceuticals, technology, agriculture, automotive, textiles,
+chemicals, electronics, steel, finance, healthcare, education,
+retail, logistics, defence, telecom
+```
+
+👉 Any custom sector is also supported.
+
+---
+
+## 🚀 Deployment
+
+Live API Docs:
+👉 https://trade-opportunities-api-developer-task-klll.onrender.com/docs#/
+
+---
+
+## 💡 Future Improvements
+
+* Database integration (PostgreSQL)
+* Redis caching for performance
+* User registration system
+* Store historical reports
+* Async background processing
+* Frontend dashboard
+
+---
+
+## 👨‍💻 Author
+
+**Maidam Shiva Kumar**
+
+---
+
+## ⭐ Support
+
+If you found this project useful, consider giving it a ⭐ on GitHub!
