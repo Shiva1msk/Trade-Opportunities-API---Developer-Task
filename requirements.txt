@@ -1,7 +1,7 @@
 fastapi
 uvicorn[standard]
 python-jose[cryptography]
-passlib[bcrypt]
+bcrypt
 httpx
 google-generativeai
 python-dotenv

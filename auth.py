@@ -1,34 +1,37 @@
 import logging
 import uuid
-import warnings
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-# Suppress passlib/bcrypt version detection noise (cosmetic only, no impact)
-warnings.filterwarnings("ignore", ".*bcrypt.*")
-logging.getLogger("passlib").setLevel(logging.ERROR)
-
+import bcrypt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 logger = logging.getLogger(__name__)
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 bearer_scheme = HTTPBearer()
+
+
+def _hash_password(plain: str) -> str:
+    return bcrypt.hashpw(plain.encode()[:72], bcrypt.gensalt()).decode()
+
+
+def _verify_password(plain: str, hashed: str) -> bool:
+    return bcrypt.checkpw(plain.encode()[:72], hashed.encode())
+
 
 # In-memory user store (demo users)
 USERS_DB: dict[str, dict] = {
     "demo": {
         "username": "demo",
-        "hashed_password": pwd_context.hash("demo123"),
+        "hashed_password": _hash_password("demo123"),
     },
     "analyst": {
         "username": "analyst",
-        "hashed_password": pwd_context.hash("analyst456"),
+        "hashed_password": _hash_password("analyst456"),
     },
 }
 
@@ -37,7 +40,7 @@ SESSIONS: dict[str, dict] = {}
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    return _verify_password(plain, hashed)
 
 
 def authenticate_user(username: str, password: str) -> Optional[dict]:
